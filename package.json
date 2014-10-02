@@ -1,0 +1,31 @@
+{
+  "name": "kattegat-wsbridge",
+  "version": "0.0.1",
+  "description": "TCP-based websocket bridge for Kattegat",
+  "main": "index.js",
+  "scripts": {
+    "start": "index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ClintH/kattegat-wsbridge.git"
+  },
+  "keywords": [
+    "npm",
+    "module"
+  ],
+  "dependencies": {
+    "socket.io":"1.0.6",
+    "socket.io-client":"1.0.6",
+    "nodejs-websocket":"1.0.0"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "author": "Clint Heyer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ClintH/kattegat-wsbridge/issues"
+  },
+  "homepage": "https://github.com/ClintH/kattegat-wsbridge"
+}
