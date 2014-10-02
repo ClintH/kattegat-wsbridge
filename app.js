@@ -11,6 +11,12 @@ var onConnect = function(conn) {
 	console.log("Bridge client connected");
   
   // Make connection to server
+  setTimeout(function() {
+    makeBridge(conn);
+  }, 1000);
+}
+
+var makeBridge = function(conn) {
   var kconn = io(kattegatUrl, {multiplex:false});
 
   var forwardJson = function(evt, d) {
@@ -35,24 +41,27 @@ var onConnect = function(conn) {
 
     kconn.on('disconnect', function() {
       console.log("Bridge disconnected");
+      conn.close();
     })
   })
 
   // Forward events from the client side
-  conn.on("text", function (text) {
-    var bracePos = text.indexOf("{");
-    var bracketPos = text.indexOf("[");
-    if (bracePos < 0 && bracketPos < 0) {
-      console.log("Bridge received malformed text: " + text);
-      return;
-    }
-    var pos = Math.min(bracketPos, bracePos);
-    var prefix = text.substr(0, pos);
-    var json = text.substr(pos, text.length-pos);
+  conn.on("text", function (json) {
+    //console.log("in: " + text);
+    // var bracePos = text.indexOf("{");
+    // var bracketPos = text.indexOf("[");
+    // if (bracePos < 0 && bracketPos < 0) {
+    //   console.log("Bridge received malformed text: " + text);
+    //   return;
+    // }
+    // var pos = Math.min(bracketPos, bracePos);
+    // var prefix = text.substr(0, pos);
+    // var json = text.substr(pos, text.length-pos);
     try {    
       var o = JSON.parse(json);
       var eventName = o[0];
       var eventPayload = o[1];
+      console.log("Forwarding to Kattegat: " + eventName + " - " + JSON.stringify(eventPayload));
       kconn.emit(eventName, eventPayload);
     } catch (e) {
       console.log("Bridge received malformed json: " + json);
@@ -60,7 +69,7 @@ var onConnect = function(conn) {
   })
 
   conn.on("close", function (code, reason) {
-      console.log("Bride client closed");
+      console.log("Bridge client closed");
       kconn.close();
   })
   conn.on("error", function(e) {
@@ -69,6 +78,3 @@ var onConnect = function(conn) {
 }
 
 var server = ws.createServer(onConnect).listen(bridgePort);
-
-
-
